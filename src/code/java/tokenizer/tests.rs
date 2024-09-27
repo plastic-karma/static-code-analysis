@@ -17,4 +17,22 @@ mod tests {
         assert_eq!(tokens[2].token_type, TokenType::Bracket);
         assert_eq!(tokens[3].token_type, TokenType::Bracket);
     }
+
+    #[test]
+    fn test_class_with_constructor() {
+        let tokens = tokenize(r#"class Test {
+            public Test() {}
+        }"#);
+        assert_eq!(tokens.len(), 10);
+        assert_eq!(tokens[0].token_type, TokenType::Keyword);
+        assert_eq!(tokens[1].token_type, TokenType::Identifier);
+        assert_eq!(tokens[2].token_type, TokenType::Bracket);
+        assert_eq!(tokens[3].token_type, TokenType::Keyword);
+        assert_eq!(tokens[4].token_type, TokenType::Identifier);
+        assert_eq!(tokens[5].token_type, TokenType::Bracket);
+        assert_eq!(tokens[6].token_type, TokenType::Bracket);
+        assert_eq!(tokens[7].token_type, TokenType::Bracket);
+        assert_eq!(tokens[8].token_type, TokenType::Bracket);
+        assert_eq!(tokens[9].token_type, TokenType::Bracket);
+    }
 }

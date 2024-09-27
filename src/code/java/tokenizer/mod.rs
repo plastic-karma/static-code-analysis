@@ -28,7 +28,7 @@ pub fn tokenize(compilation_unit: &str) -> Vec<Token> {
             }
 
             // Handle brackets
-            _ if character == '{' || character == '}' => {
+            _ if character == '{' || character == '}' || character == ')' || character == '(' => {
                 if !current_token.is_empty() {
                     tokens.push(Token::new(
                         get_token_type(&current_token),
