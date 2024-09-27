@@ -62,4 +62,32 @@ mod tests {
         ];
         assert_eq!(tokens, expected_tokens);
     }
+
+    #[test]
+    fn test_empty_method() {
+        let tokens = tokenize(r#"class Test {
+            public void testFunction(final String str, int i) {}
+        }"#);
+
+        let expected_tokens = vec![
+            Token::new(TokenType::Keyword, "class".to_string()),
+            Token::new(TokenType::Identifier, "Test".to_string()),
+            Token::new(TokenType::Bracket, "{".to_string()),
+            Token::new(TokenType::Keyword, "public".to_string()),
+            Token::new(TokenType::Keyword, "void".to_string()),
+            Token::new(TokenType::Identifier, "testFunction".to_string()),
+            Token::new(TokenType::Bracket, "(".to_string()),
+            Token::new(TokenType::Keyword, "final".to_string()),
+            Token::new(TokenType::Identifier, "String".to_string()),
+            Token::new(TokenType::Identifier, "str".to_string()),
+            Token::new(TokenType::Comma, ",".to_string()),
+            Token::new(TokenType::Identifier, "int".to_string()),
+            Token::new(TokenType::Identifier, "i".to_string()),
+            Token::new(TokenType::Bracket, ")".to_string()),
+            Token::new(TokenType::Bracket, "{".to_string()),
+            Token::new(TokenType::Bracket, "}".to_string()),
+            Token::new(TokenType::Bracket, "}".to_string()),
+        ];
+        assert_eq!(tokens, expected_tokens);
+    }
 }
