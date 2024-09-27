@@ -50,7 +50,32 @@ pub fn tokenize(compilation_unit: &str) -> Vec<Token> {
                 }
                 tokens.push(Token::new(TokenType::Comma, character.to_string()));
             }
+
+            // Handle asterisks (in import statements)
+            _ if character == '*' => {
+                if !current_token.is_empty() {
+                    tokens.push(Token::new(
+                        get_token_type(&current_token),
+                        current_token.clone(),
+                    ));
+                    current_token.clear();
+                }
+                tokens.push(Token::new(TokenType::Asterisks, character.to_string()));
+            }
+
+             // Handle Dot
+             _ if character == '.' => {
+                if !current_token.is_empty() {
+                    tokens.push(Token::new(
+                        get_token_type(&current_token),
+                        current_token.clone(),
+                    ));
+                    current_token.clear();
+                }
+                tokens.push(Token::new(TokenType::Dot, character.to_string()));
+            }
             _ => {}
+
         }
     }
     return tokens;
@@ -67,7 +92,7 @@ fn get_token_type(token: &str) -> TokenType {
 }
 
 fn is_keyword(token: &str) -> bool {
-    matches!(token, "class" | "public" | "static" | "void" | "final")
+    matches!(token, "class" | "public" | "static" | "void" | "final" | "import")
 }
 
 fn is_identifier(token: &str) -> bool {
@@ -104,4 +129,6 @@ pub enum TokenType {
     Keyword,
     Bracket,
     Comma,
+    Asterisks,
+    Dot
 }

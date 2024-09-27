@@ -90,4 +90,32 @@ mod tests {
         ];
         assert_eq!(tokens, expected_tokens);
     }
+
+    #[test]
+    fn test_imports() {
+        let tokens = tokenize(r#"
+        import java.util.List;
+        import java.net.*;
+        class Test{}
+        "#);
+        let expected_tokens = vec![
+            Token::new(TokenType::Keyword, "import".to_string()),
+            Token::new(TokenType::Identifier, "java".to_string()),
+            Token::new(TokenType::Dot, ".".to_string()),
+            Token::new(TokenType::Identifier, "util".to_string()),
+            Token::new(TokenType::Dot, ".".to_string()),
+            Token::new(TokenType::Identifier, "List".to_string()),
+            Token::new(TokenType::Keyword, "import".to_string()),
+            Token::new(TokenType::Identifier, "java".to_string()),
+            Token::new(TokenType::Dot, ".".to_string()),
+            Token::new(TokenType::Identifier, "net".to_string()),
+            Token::new(TokenType::Dot, ".".to_string()),
+            Token::new(TokenType::Asterisks, "*".to_string()),
+            Token::new(TokenType::Keyword, "class".to_string()),
+            Token::new(TokenType::Identifier, "Test".to_string()),
+            Token::new(TokenType::Bracket, "{".to_string()),
+            Token::new(TokenType::Bracket, "}".to_string())
+        ];
+        assert_eq!(tokens, expected_tokens);
+    }
 }
