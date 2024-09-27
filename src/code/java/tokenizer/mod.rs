@@ -38,6 +38,18 @@ pub fn tokenize(compilation_unit: &str) -> Vec<Token> {
                 }
                 tokens.push(Token::new(TokenType::Bracket, character.to_string()));
             }
+
+            // Handle commas
+            _ if character == ',' => {
+                if !current_token.is_empty() {
+                    tokens.push(Token::new(
+                        get_token_type(&current_token),
+                        current_token.clone(),
+                    ));
+                    current_token.clear();
+                }
+                tokens.push(Token::new(TokenType::Comma, character.to_string()));
+            }
             _ => {}
         }
     }
@@ -55,7 +67,7 @@ fn get_token_type(token: &str) -> TokenType {
 }
 
 fn is_keyword(token: &str) -> bool {
-    matches!(token, "class" | "public" | "static" | "void")
+    matches!(token, "class" | "public" | "static" | "void" | "final")
 }
 
 fn is_identifier(token: &str) -> bool {
@@ -63,7 +75,7 @@ fn is_identifier(token: &str) -> bool {
 }
 
 /// Represents a token in a compilation unit
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Token {
     pub token_type: TokenType,
     pub value: String,
@@ -91,4 +103,5 @@ pub enum TokenType {
     Identifier,
     Keyword,
     Bracket,
+    Comma,
 }
