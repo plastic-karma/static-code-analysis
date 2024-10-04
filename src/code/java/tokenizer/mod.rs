@@ -6,8 +6,8 @@ use std::str::Chars;
 #[cfg(test)]
 mod tests;
 
-const OPERATORS: [&str; 26] = [
-    "+", "/", "-", "=", ">", "<", "|", "&", "++", "--", "==", "!=", "<=", ">=", "&&", "||", "+=",
+const OPERATORS: [&str; 27] = [
+    "+", "/", "-", "=", "*", ">", "<", "|", "&", "++", "--", "==", "!=", "<=", ">=", "&&", "||", "+=",
     "-=", "*=", "/=", "%=", "&=", "|=", "^=", "!", "!=",
 ];
 
@@ -19,6 +19,7 @@ pub fn tokenize(compilation_unit: &str) -> Vec<Token> {
     let handlers: Vec<fn(&mut Peekable<Chars>) -> Option<Token>> = vec![
         handle_whitespace,
         handle_alpha_numeric,
+        handle_operator,
         handle_bracket,
         handle_comma,
         handle_asterisks,
@@ -69,7 +70,24 @@ fn handle_whitespace(iter: &mut Peekable<Chars>) -> Option<Token> {
     } else {
         return None;
     }
-    
+}
+
+fn handle_operator(iter: &mut Peekable<Chars>) -> Option<Token> {
+    let mut token = String::new();
+    while let Some(&ch) = iter.peek() {
+        if OPERATORS.join("").contains(ch) {
+            token.push(ch);
+            iter.next();
+        } else {
+            break
+        }
+    }
+    print!("token: {}", token);
+    if !token.is_empty() && is_operator(&token) {
+        Some(Token::with_defaults(TokenType::Operator, token))
+    } else {
+        None
+    }
 }
 
 fn handle_alpha_numeric(iter: &mut Peekable<Chars>) -> Option<Token> {

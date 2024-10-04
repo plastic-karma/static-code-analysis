@@ -113,12 +113,35 @@ mod tests {
             Token::with_defaults(TokenType::Dot, ".".to_string()),
             Token::with_defaults(TokenType::Identifier, "net".to_string()),
             Token::with_defaults(TokenType::Dot, ".".to_string()),
-            Token::with_defaults(TokenType::Asterisks, "*".to_string()),
+            Token::with_defaults(TokenType::Operator, "*".to_string()),
             Token::with_defaults(TokenType::Semicolon, ";".to_string()),
             Token::with_defaults(TokenType::Keyword, "class".to_string()),
             Token::with_defaults(TokenType::Identifier, "Test".to_string()),
             Token::with_defaults(TokenType::Bracket, "{".to_string()),
             Token::with_defaults(TokenType::Bracket, "}".to_string())
+        ];
+        assert_eq!(tokens, expected_tokens);
+    }
+
+    #[test]
+    fn test_operators(){
+        let tokens = tokenize(r#"
+            int i += 0 + 1 - 2 * 3 / 4;
+        "#);
+        let expected_tokens = vec![
+            Token::with_defaults(TokenType::Identifier, "int".to_string()),
+            Token::with_defaults(TokenType::Identifier, "i".to_string()),
+            Token::with_defaults(TokenType::Operator, "+=".to_string()),
+            Token::with_defaults(TokenType::Identifier, "0".to_string()),
+            Token::with_defaults(TokenType::Operator, "+".to_string()),
+            Token::with_defaults(TokenType::Identifier, "1".to_string()),
+            Token::with_defaults(TokenType::Operator, "-".to_string()),
+            Token::with_defaults(TokenType::Identifier, "2".to_string()),
+            Token::with_defaults(TokenType::Operator, "*".to_string()),
+            Token::with_defaults(TokenType::Identifier, "3".to_string()),
+            Token::with_defaults(TokenType::Operator, "/".to_string()),
+            Token::with_defaults(TokenType::Identifier, "4".to_string()),
+            Token::with_defaults(TokenType::Semicolon, ";".to_string()),
         ];
         assert_eq!(tokens, expected_tokens);
     }
