@@ -2,6 +2,7 @@ use std::char;
 use std::fmt;
 use std::iter::Peekable;
 use std::str::Chars;
+use crate::collections::push_back_iterator::PushBackIterator;
 
 #[cfg(test)]
 mod tests;
@@ -14,11 +15,12 @@ const OPERATORS: [&str; 27] = [
 /// Scans a compilation unit and returns a vector of tokens
 pub fn tokenize(compilation_unit: &str) -> Vec<Token> {
     let mut tokens: Vec<Token> = Vec::new();
-    let mut iter = compilation_unit.chars().peekable();
+    let mut iter = PushBackIterator::new(compilation_unit.chars().peekable());
 
-    let handlers: Vec<fn(&mut Peekable<Chars>) -> Option<Token>> = vec![
+    let handlers: Vec<fn(&mut PushBackIterator<Peekable<Chars>>) -> Option<Token>> = vec![
         handle_whitespace,
-        handle_alpha_numeric,
+        handle_alpha,
+        handle_number,
         handle_operator,
         handle_bracket,
         handle_comma,
@@ -51,11 +53,11 @@ fn get_token_type(token: &str) -> TokenType {
     }
 }
 
-fn handle_unknown(iter: &mut Peekable<Chars>) -> Option<Token> {
+fn handle_unknown(iter: &mut PushBackIterator<Peekable<Chars>>) -> Option<Token> {
     panic!("Unknown token: {}", iter.peek().unwrap());
 }
 
-fn handle_whitespace(iter: &mut Peekable<Chars>) -> Option<Token> {
+fn handle_whitespace(iter: &mut PushBackIterator<Peekable<Chars>>) -> Option<Token> {
     let mut handled: bool = false;
     while let Some(&ch) = iter.peek() {
         if ch.is_whitespace() {
@@ -72,7 +74,36 @@ fn handle_whitespace(iter: &mut Peekable<Chars>) -> Option<Token> {
     }
 }
 
-fn handle_operator(iter: &mut Peekable<Chars>) -> Option<Token> {
+fn handle_number(iter: &mut PushBackIterator<Peekable<Chars>>) -> Option<Token> {
+    let mut token = String::new();
+    let mut has_dot = false;
+
+    while let Some(&ch) = iter.peek() {
+        if ch.is_numeric() {
+            token.push(ch);
+            iter.next();
+        } else if ch == '.' && !has_dot {
+            has_dot = true;
+            token.push(ch);
+            iter.next();
+        } else {
+            break;
+        }
+    }
+
+    if !token.is_empty() && is_valid_number(&token) {
+        Some(Token::with_defaults(TokenType::Number, token))
+    } else {
+        push_back_token(token, iter);
+        None
+    }
+}
+
+fn is_valid_number(s: &str) -> bool {
+    s.parse::<f64>().is_ok()
+}
+
+fn handle_operator(iter: &mut PushBackIterator<Peekable<Chars>>) -> Option<Token> {
     let mut token = String::new();
     while let Some(&ch) = iter.peek() {
         if OPERATORS.join("").contains(ch) {
@@ -82,7 +113,6 @@ fn handle_operator(iter: &mut Peekable<Chars>) -> Option<Token> {
             break
         }
     }
-    print!("token: {}", token);
     if !token.is_empty() && is_operator(&token) {
         Some(Token::with_defaults(TokenType::Operator, token))
     } else {
@@ -90,7 +120,7 @@ fn handle_operator(iter: &mut Peekable<Chars>) -> Option<Token> {
     }
 }
 
-fn handle_alpha_numeric(iter: &mut Peekable<Chars>) -> Option<Token> {
+fn handle_alpha(iter: &mut PushBackIterator<Peekable<Chars>>) -> Option<Token> {
     let mut token = String::new();
     while let Some(&ch) = iter.peek() {
         if ch.is_alphanumeric() {
@@ -101,13 +131,22 @@ fn handle_alpha_numeric(iter: &mut Peekable<Chars>) -> Option<Token> {
         }
     }
     if !token.is_empty() {
-        Some(Token::with_defaults(get_token_type(&token), token))
-    } else {
-        None
+        if !is_valid_number(&token) {
+            return Some(Token::with_defaults(get_token_type(&token), token))
+        } else {
+            push_back_token(token, iter);
+        }
+    }
+    None
+}
+
+fn push_back_token(token: String, iter: &mut PushBackIterator<Peekable<Chars<'_>>>) {
+    for c in token.chars().rev() {
+        iter.push_back(c);
     }
 }
 
-fn handle_bracket(iter: &mut Peekable<Chars>) -> Option<Token> {
+fn handle_bracket(iter: &mut PushBackIterator<Peekable<Chars>>) -> Option<Token> {
     let mut token = String::new();
     while let Some(&ch) = iter.peek() {
         if ch == '{' || ch == '}' || ch == ')' || ch == '(' {
@@ -125,7 +164,7 @@ fn handle_bracket(iter: &mut Peekable<Chars>) -> Option<Token> {
     }
 }
 
-fn handle_comma(iter: &mut Peekable<Chars>) -> Option<Token> {
+fn handle_comma(iter: &mut PushBackIterator<Peekable<Chars>>) -> Option<Token> {
     let mut token = String::new();
     while let Some(&ch) = iter.peek() {
         if ch == ',' {
@@ -143,7 +182,7 @@ fn handle_comma(iter: &mut Peekable<Chars>) -> Option<Token> {
     }
 }
 
-fn handle_asterisks(iter: &mut Peekable<Chars>) -> Option<Token> {
+fn handle_asterisks(iter: &mut PushBackIterator<Peekable<Chars>>) -> Option<Token> {
     let mut token = String::new();
     while let Some(&ch) = iter.peek() {
         if ch == '*' {
@@ -161,7 +200,7 @@ fn handle_asterisks(iter: &mut Peekable<Chars>) -> Option<Token> {
     }
 }
 
-fn handle_dot(iter: &mut Peekable<Chars>) -> Option<Token> {
+fn handle_dot(iter: &mut PushBackIterator<Peekable<Chars>>) -> Option<Token> {
     let mut token = String::new();
     while let Some(&ch) = iter.peek() {
         if ch == '.' {
@@ -178,7 +217,7 @@ fn handle_dot(iter: &mut Peekable<Chars>) -> Option<Token> {
     }
 }
 
-fn handle_semicolon(iter: &mut Peekable<Chars>) -> Option<Token> {
+fn handle_semicolon(iter: &mut PushBackIterator<Peekable<Chars>>) -> Option<Token> {
     let mut token = String::new();
     while let Some(&ch) = iter.peek() {
         if ch == ';' {
@@ -245,6 +284,7 @@ impl fmt::Display for Token {
 #[derive(Debug, PartialEq)]
 pub enum TokenType {
     Identifier,
+    Number,
     Keyword,
     Bracket,
     Comma,

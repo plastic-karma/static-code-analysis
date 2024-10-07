@@ -132,15 +132,57 @@ mod tests {
             Token::with_defaults(TokenType::Identifier, "int".to_string()),
             Token::with_defaults(TokenType::Identifier, "i".to_string()),
             Token::with_defaults(TokenType::Operator, "+=".to_string()),
-            Token::with_defaults(TokenType::Identifier, "0".to_string()),
+            Token::with_defaults(TokenType::Number, "0".to_string()),
             Token::with_defaults(TokenType::Operator, "+".to_string()),
-            Token::with_defaults(TokenType::Identifier, "1".to_string()),
+            Token::with_defaults(TokenType::Number, "1".to_string()),
             Token::with_defaults(TokenType::Operator, "-".to_string()),
-            Token::with_defaults(TokenType::Identifier, "2".to_string()),
+            Token::with_defaults(TokenType::Number, "2".to_string()),
             Token::with_defaults(TokenType::Operator, "*".to_string()),
-            Token::with_defaults(TokenType::Identifier, "3".to_string()),
+            Token::with_defaults(TokenType::Number, "3".to_string()),
             Token::with_defaults(TokenType::Operator, "/".to_string()),
-            Token::with_defaults(TokenType::Identifier, "4".to_string()),
+            Token::with_defaults(TokenType::Number, "4".to_string()),
+            Token::with_defaults(TokenType::Semicolon, ";".to_string()),
+        ];
+        assert_eq!(tokens, expected_tokens);
+    }
+
+    #[test]
+    fn test_numbers() {
+        let tokens = tokenize(r#"
+            int i = 1012;
+            double d = 0.01;
+        "#);
+        let expected_tokens = vec![
+            Token::with_defaults(TokenType::Identifier, "int".to_string()),
+            Token::with_defaults(TokenType::Identifier, "i".to_string()),
+            Token::with_defaults(TokenType::Operator, "=".to_string()),
+            Token::with_defaults(TokenType::Number, "1012".to_string()),
+            Token::with_defaults(TokenType::Semicolon, ";".to_string()),
+            Token::with_defaults(TokenType::Identifier, "double".to_string()),
+            Token::with_defaults(TokenType::Identifier, "d".to_string()),
+            Token::with_defaults(TokenType::Operator, "=".to_string()),
+            Token::with_defaults(TokenType::Number, "0.01".to_string()),
+            Token::with_defaults(TokenType::Semicolon, ";".to_string()),
+        ];
+        assert_eq!(tokens, expected_tokens);
+    }
+
+    #[test]
+    fn test_identifiers_with_digits() {
+        let tokens = tokenize(r#"
+            int i10 = 1012;
+            double d3 = 0.01;
+        "#);
+        let expected_tokens = vec![
+            Token::with_defaults(TokenType::Identifier, "int".to_string()),
+            Token::with_defaults(TokenType::Identifier, "i10".to_string()),
+            Token::with_defaults(TokenType::Operator, "=".to_string()),
+            Token::with_defaults(TokenType::Number, "1012".to_string()),
+            Token::with_defaults(TokenType::Semicolon, ";".to_string()),
+            Token::with_defaults(TokenType::Identifier, "double".to_string()),
+            Token::with_defaults(TokenType::Identifier, "d3".to_string()),
+            Token::with_defaults(TokenType::Operator, "=".to_string()),
+            Token::with_defaults(TokenType::Number, "0.01".to_string()),
             Token::with_defaults(TokenType::Semicolon, ";".to_string()),
         ];
         assert_eq!(tokens, expected_tokens);
