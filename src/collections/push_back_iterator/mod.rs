@@ -31,7 +31,7 @@ where
         if self.pushed_back.is_empty() {
             self.iter.peek()
         } else {
-            Some(&self.pushed_back.last().unwrap())
+            Some(self.pushed_back.last().unwrap())
         }
     }
 }
