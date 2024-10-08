@@ -16,9 +16,24 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
+
+    - name: Install cargo-tarpaulin
+      run: cargo install cargo-tarpaulin
+
     - name: Build
       run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+
+    - name: Run tests with coverage
+      run: cargo tarpaulin --out Html
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: ./tarpaulin-report.html
+    
     - name: Run clippy
       run: cargo clippy --verbose
