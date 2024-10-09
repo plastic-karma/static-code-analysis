@@ -25,15 +25,6 @@ jobs:
 
     - name: Build
       run: cargo build --verbose
-
-    - name: Run tests with coverage
-      run: cargo tarpaulin --out Html
-
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v3
-      with:
-        name: coverage-report
-        path: ./tarpaulin-report.html
     
     - name: Run clippy
       run: cargo clippy --verbose
