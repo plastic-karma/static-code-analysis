@@ -233,6 +233,33 @@ mod tests {
         assert_tokens_equal(tokens, expected_tokens);
     }
 
+    #[test]
+    fn test_while_loop() {
+        let tokens = tokenize(r#"
+                while (i < 10) {
+                    i++;
+                }
+            }"#);
+        
+
+        let expected_tokens = vec![
+            Token::with_defaults(TokenType::Keyword, "while".to_string()),
+            Token::with_defaults(TokenType::Bracket, "(".to_string()),
+            Token::with_defaults(TokenType::Identifier, "i".to_string()),
+            Token::with_defaults(TokenType::Operator, "<".to_string()),
+            Token::with_defaults(TokenType::Number, "10".to_string()),
+            Token::with_defaults(TokenType::Bracket, ")".to_string()),
+            Token::with_defaults(TokenType::Bracket, "{".to_string()),
+            Token::with_defaults(TokenType::Identifier, "i".to_string()),
+            Token::with_defaults(TokenType::Operator, "++".to_string()),
+            Token::with_defaults(TokenType::Semicolon, ";".to_string()),
+            Token::with_defaults(TokenType::Bracket, "}".to_string()),
+            Token::with_defaults(TokenType::Bracket, "}".to_string()),
+        ];
+
+        assert_tokens_equal(tokens, expected_tokens);
+    }
+
     fn assert_tokens_equal(tokens: Vec<Token>, expected_tokens: Vec<Token>) {
         assert_eq!(tokens.len(), expected_tokens.len());
         let mut i = 0;
