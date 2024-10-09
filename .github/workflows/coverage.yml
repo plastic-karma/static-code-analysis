@@ -17,13 +17,9 @@ jobs:
 
       - name: Generate code coverage
         run: |
-          cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out Lcov --output-dir ./target/tarpaulin --fail-under 88
+          cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out Lcov --fail-under 88
     
-      - name: Upload coverage to codecov
+      - name: Upload results to Codecov
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: target/tarpaulin/lcov.info
-          flags: unittests
-          name: codecov
-          fail_ci_if_error: true
+            token: ${{ secrets.CODECOV_TOKEN }}

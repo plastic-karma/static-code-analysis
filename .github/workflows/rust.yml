@@ -28,4 +28,5 @@ jobs:
   
   coverage:
     uses: ./.github/workflows/coverage.yml
+    secrets: inherit
     needs: [build]
