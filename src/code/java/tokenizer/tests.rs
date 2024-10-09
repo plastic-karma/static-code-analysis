@@ -188,4 +188,59 @@ mod tests {
         assert_eq!(tokens, expected_tokens);
     }
 
+    #[test]
+    fn test_function_with_if_statement() {
+        let tokens = tokenize(r#"
+            public boolean testFunction(final String str, int i) {
+                if (i == 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }"#);
+            let expected_tokens = vec![
+            Token::with_defaults(TokenType::Keyword, "public".to_string()),
+            Token::with_defaults(TokenType::Identifier, "boolean".to_string()),
+            Token::with_defaults(TokenType::Identifier, "testFunction".to_string()),
+            Token::with_defaults(TokenType::Bracket, "(".to_string()),
+            Token::with_defaults(TokenType::Keyword, "final".to_string()),
+            Token::with_defaults(TokenType::Identifier, "String".to_string()),
+            Token::with_defaults(TokenType::Identifier, "str".to_string()),
+            Token::with_defaults(TokenType::Comma, ",".to_string()),
+            Token::with_defaults(TokenType::Identifier, "int".to_string()),
+            Token::with_defaults(TokenType::Identifier, "i".to_string()),
+            Token::with_defaults(TokenType::Bracket, ")".to_string()),
+            Token::with_defaults(TokenType::Bracket, "{".to_string()),
+            Token::with_defaults(TokenType::Keyword, "if".to_string()),
+            Token::with_defaults(TokenType::Bracket, "(".to_string()),
+            Token::with_defaults(TokenType::Identifier, "i".to_string()),
+            Token::with_defaults(TokenType::Operator, "==".to_string()),
+            Token::with_defaults(TokenType::Number, "0".to_string()),
+            Token::with_defaults(TokenType::Bracket, ")".to_string()),
+            Token::with_defaults(TokenType::Bracket, "{".to_string()),
+            Token::with_defaults(TokenType::Keyword, "return".to_string()),
+            Token::with_defaults(TokenType::Identifier, "true".to_string()),
+            Token::with_defaults(TokenType::Semicolon, ";".to_string()),
+            Token::with_defaults(TokenType::Bracket, "}".to_string()),
+            Token::with_defaults(TokenType::Keyword, "else".to_string()),
+            Token::with_defaults(TokenType::Bracket, "{".to_string()),
+            Token::with_defaults(TokenType::Keyword, "return".to_string()),
+            Token::with_defaults(TokenType::Identifier, "false".to_string()),
+            Token::with_defaults(TokenType::Semicolon, ";".to_string()),
+            Token::with_defaults(TokenType::Bracket, "}".to_string()),
+            Token::with_defaults(TokenType::Bracket, "}".to_string()),
+        ];
+        assert_tokens_equal(tokens, expected_tokens);
+    }
+
+    fn assert_tokens_equal(tokens: Vec<Token>, expected_tokens: Vec<Token>) {
+        assert_eq!(tokens.len(), expected_tokens.len());
+        let mut i = 0;
+        for (token, expected_token) in tokens.iter().zip(expected_tokens.iter()) {
+            assert_eq!(token.token_type, expected_token.token_type, "checking token types at position {} for {} {}", i, token, expected_token);
+            assert_eq!(token.value, expected_token.value);
+            i += 1;
+        }
+    }
+
 }

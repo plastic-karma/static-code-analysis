@@ -226,7 +226,7 @@ fn handle_semicolon(iter: &mut PushBackIterator<Peekable<Chars>>) -> Option<Toke
 fn is_keyword(token: &str) -> bool {
     matches!(
         token,
-        "class" | "public" | "static" | "void" | "final" | "import"
+        "class" | "public" | "static" | "void" | "final" | "import" | "if" | "else" | "return"
     )
 }
 
