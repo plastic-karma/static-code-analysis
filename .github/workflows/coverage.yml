@@ -17,7 +17,7 @@ jobs:
           cargo +nightly tarpaulin --verbose --all-features --workspace --timeout 120 --out Lcov --output-dir ./target/tarpaulin --fail-under 88
     
       - name: Upload coverage to codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: target/tarpaulin/lcov.info
