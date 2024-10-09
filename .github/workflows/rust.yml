@@ -1,15 +1,11 @@
 name: Rust
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [workflow_call]
 
 env:
   CARGO_TERM_COLOR: always
 
-jobs:
+jobs: 
   build:
 
     runs-on: ubuntu-latest
@@ -17,14 +13,15 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
-
-    - name: Install cargo-tarpaulin
-      run: cargo install cargo-tarpaulin
-
     - name: Build
       run: cargo build --verbose
     
+    - name: Build
+      run: cargo test --verbose
+    
     - name: Run clippy
       run: cargo clippy --verbose
+  
+  coverage:
+    uses: ./.github/workflows/coverage.yml
+    needs: [build]

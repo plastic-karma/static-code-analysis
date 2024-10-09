@@ -1,8 +1,6 @@
-on:
-    push:
-      branches: [ "main" ]
-    pull_request:
-      branches: [ "main" ]
+name: coverage
+
+on: [workflow_call]
 jobs:
   test:
     name: coverage
@@ -16,4 +14,4 @@ jobs:
 
       - name: Generate code coverage
         run: |
-          cargo +nightly tarpaulin --verbose --all-features --workspace --timeout 120 --fail-under 85
+          cargo +nightly tarpaulin --verbose --all-features --workspace --timeout 120 --fail-under 88
