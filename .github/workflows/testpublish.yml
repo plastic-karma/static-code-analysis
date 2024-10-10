@@ -3,7 +3,7 @@ name: coverage
 on: [workflow_call]
 jobs:
   test:
-    name: coverage
+    name: publish-coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -11,6 +11,9 @@ jobs:
     
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
+      
+      - name: Install nightly toolchain
+        run: rustup toolchain install nightly
 
       - name: Install cargo-tarpaulin
         run: cargo install cargo2junit
