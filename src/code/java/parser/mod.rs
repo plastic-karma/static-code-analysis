@@ -6,6 +6,7 @@ use crate::code::java::tokenizer::TokenType::{Keyword, Identifier};
 #[cfg(test)]
 mod tests;
 
+/// Parses a vector of tokens into a compilation unit
 fn parse(tokens: &Vec<Token>) -> CompilationUnit {
     let mut iter = tokens.iter().peekable();
     let mut compilation_unit = CompilationUnit::new();

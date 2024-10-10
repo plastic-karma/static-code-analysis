@@ -25,7 +25,24 @@ mod tests {
             class return {
                 int i = 3;
             }"#);
+        parse(&tokens);
+    }
+
+    #[test]
+    fn test_multiple_clases() {
+        let tokens = tokenize(r#"
+            import java.util.List;
+            class Test {
+                int i = 3;
+            }
+            class Test2 {
+                int i = 3;
+            }"#);
         let compilation_unit = parse(&tokens);
+
+        assert_eq!(compilation_unit.classes.len(), 2);
+        assert!(compilation_unit.classes.iter().any(|class| class.name == "Test"));
+        assert!(compilation_unit.classes.iter().any(|class| class.name == "Test2"));
     }
 
 }
