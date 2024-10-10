@@ -1,6 +1,7 @@
 mod code {
     pub mod java {
         pub mod tokenizer;
+        pub mod parser;
     }
 }
 
