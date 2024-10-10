@@ -30,3 +30,8 @@ jobs:
     uses: ./.github/workflows/coverage.yml
     secrets: inherit
     needs: [build]
+  
+  testpublish:
+    uses: ./.github/workflows/testpublish.yml
+    secrets: inherit
+    needs: [build]
